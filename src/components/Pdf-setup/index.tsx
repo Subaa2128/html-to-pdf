@@ -2,20 +2,23 @@ import React from "react";
 import { FiMail, FiPhone, FiGlobe, FiUser } from "react-icons/fi";
 import Logo from "../../assets/defutura-logo.jpg";
 import Innovation from "../../assets/defutura-innovation.jpg";
-import { jsPDF } from "jspdf";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 import "./PdfSetup.scss";
 const PdfSetup = () => {
   const createPDF = async () => {
-    const pdf = new jsPDF("portrait", "pt", "a4");
-    const data = await document.querySelector("#pdf");
-    pdf.html(data as any).then(() => {
-      pdf.save("shipping_label.pdf");
+    const input = await document.querySelector("#pdf");
+    html2canvas(input as any).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("portrait", "pt", "a4");
+      pdf.addImage(imgData as any, "JPEG" as any, 0, 0, -150, 0);
+      pdf.save(`html_to_pdf.pdf`);
     });
   };
 
   return (
-    <div className="pdf-setup">
-      <div className="first-grid" id="pdf">
+    <div className="pdf-setup" id="pdf">
+      <div className="first-grid">
         <div className="logo">
           <div className="image">
             <img src={Logo} alt="" />
